@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { datastore } from '../components/table/datastore';
+import {
+  handleEquals,
+  handleIsGreaterThanOrLessThan,
+  handleIsAnyOf,
+  handleHasAnyValue,
+  handleContainsValue,
+  handleHasNoValue,
+} from '../utilities/filteringFunctions';
+import Table from '../components/table/index';
 
 const initialTableColumns = datastore.getProperties().map((property) => ({
   key: property.id,
@@ -20,14 +29,14 @@ datastore.products.forEach((product) => {
 
 const initialTableData = consumerData;
 
-const Index = (props) => {
+const Index = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedOperator, setSelectedOperator] = useState(null);
 
   const [propertyValueInput, setPropertyValueInput] = useState('');
   const [propertyValueSelect, setPropertyValueSelect] = useState(null);
 
-  const [propertyValueError, setPropertyValueError] = useState('');
+  const [productFilter, setProductFilter] = useState(null);
 
   const [filteredTableData, setFilteredTableData] = useState(initialTableData);
 
@@ -49,92 +58,73 @@ const Index = (props) => {
       'Is any of',
     ],
 
-    enumerated: ['equals', 'Has any value', 'Has no value', 'Is any of'],
-  };
-
-  // useEffect(() => {
-  //   console.log('filteredTableData Effect', filteredTableData);
-  //   return () => {};
-  // }, [filteredTableData]);
-
-  const handleEquals = () => {
-    const filtered = initialTableData.filter(
-      (product) => product[selectedProperty.id] === propertyValueInput
-    );
-
-    setFilteredTableData(filtered);
-  };
-
-  const handleHasAnyValue = () => {};
-
-  const handleIsGreaterThan = () => {
-    if (isNaN(propertyValueInput)) {
-      setPropertyValueError('input must be a number');
-      return;
-    }
-    const filtered = initialTableData.filter((product) => {
-      return product[selectedProperty.id] > propertyValueInput;
-    });
-
-    setFilteredTableData(filtered);
-  };
-
-  const handleIsLessThan = () => {
-    if (isNaN(propertyValueInput)) {
-      setPropertyValueError('input must be a number');
-      return;
-    }
-    const filtered = initialTableData.filter((product) => {
-      return product[selectedProperty.id] < propertyValueInput;
-    });
-
-    setFilteredTableData(filtered);
-  };
-
-  // const handleHasNoValue = () => {};
-
-  const handleIsAnyOf = () => {
-    const filtered = initialTableData.filter((product) => {
-      return propertyValueSelect.some((propertyValue) => {
-        return product[selectedProperty.id] === propertyValue.id;
-      });
-    });
-
-    setFilteredTableData(filtered);
-  };
-
-  const handleContainsValue = () => {
-    const filtered = initialTableData.filter((product) => {
-      return product[selectedProperty.id]?.includes(propertyValueInput);
-    });
-
-    setFilteredTableData(filtered);
+    enumerated: ['Equals', 'Has any value', 'Has no value', 'Is any of'],
   };
 
   const handleFilter = () => {
-    setPropertyValueError('');
     if (propertyValueInput || propertyValueSelect?.length) {
+      const productFilter = propertyValueInput
+        ? propertyValueInput
+        : propertyValueSelect;
       switch (selectedOperator.id) {
         case 'Equals':
-          handleEquals();
+          const equalsResult = handleEquals(
+            initialTableData,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(equalsResult);
           break;
         case 'Has any value':
-          console.log('in any value');
-          handleHasAnyValue();
+          const hasAnyResult = handleHasAnyValue(
+            initialTableData,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(hasAnyResult);
           break;
         case 'Is greater than':
-          handleIsGreaterThan();
+          const greaterThanResult = handleIsGreaterThanOrLessThan(
+            initialTableData,
+            selectedOperator.id,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(greaterThanResult);
           break;
         case 'Is less than':
-          handleIsLessThan();
+          const lessThanResult = handleIsGreaterThanOrLessThan(
+            initialTableData,
+            selectedOperator.id,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(lessThanResult);
           break;
         case 'Is any of':
-          handleIsAnyOf();
+          const isAnyResult = handleIsAnyOf(
+            initialTableData,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(isAnyResult);
           break;
         case 'Contains':
-          handleContainsValue();
+          const containsResult = handleContainsValue(
+            initialTableData,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(containsResult);
+          break;
         case 'Has no value':
-          handleHasNoValue();
+          const hasNoResult = handleHasNoValue(
+            initialTableData,
+            selectedProperty,
+            productFilter
+          );
+          setFilteredTableData(hasNoResult);
+          break;
         default:
           break;
       }
@@ -142,21 +132,6 @@ const Index = (props) => {
       setFilteredTableData(initialTableData);
     }
   };
-
-  const logger = () => {
-    console.log('***************************************');
-    console.log('datastore', datastore);
-    console.log('initialTableData', initialTableData);
-    console.log('initialColumnData', initialTableColumns);
-    console.log('filteredTableData', filteredTableData);
-    console.log('selectedProperty', selectedProperty);
-    console.log('selectedOperator', selectedOperator);
-    console.log('propertyValueInput', propertyValueInput);
-    console.log('propertyValueSelect', propertyValueSelect);
-    console.log('***************************************');
-  };
-
-  logger();
 
   return (
     <div>
@@ -200,16 +175,18 @@ const Index = (props) => {
           </div>
         )}
 
-        <div style={{ color: 'red' }}>{propertyValueError}</div>
         {(() => {
           if (selectedProperty?.values) {
             const ourOptions = selectedProperty.values.map((values) => ({
               id: values,
               label: values,
             }));
-
             return (
-              <div style={{ width: '250px' }}>
+              <div
+                className="product-filter-input-group"
+                style={{ width: '250px' }}
+              >
+                <span className="validation" />
                 <Select
                   isMulti
                   options={ourOptions}
@@ -249,11 +226,17 @@ const Index = (props) => {
             );
           } else {
             return (
-              <input
-                type="text"
-                onChange={(e) => setPropertyValueInput(e.target.value)}
-                value={propertyValueInput}
-              />
+              <div
+                className="product-filter-input-group"
+                style={{ width: '250px' }}
+              >
+                <span className="validation" />
+                <input
+                  type="text"
+                  onChange={(e) => setPropertyValueInput(e.target.value)}
+                  value={propertyValueInput}
+                />
+              </div>
             );
           }
         })()}
@@ -262,40 +245,8 @@ const Index = (props) => {
           Filter
         </button>
       </form>
-
       <Table columns={initialTableColumns} data={filteredTableData} />
     </div>
-  );
-};
-
-const Table = (props) => {
-  const { columns, data } = props;
-
-  const renderTableData = () => {
-    return data.map((product, i) => {
-      return (
-        <tr key={'tr-' + i}>
-          {columns.map((column, j) => {
-            return <td key={'td-' + j}>{product[column.key]}</td>;
-          })}
-        </tr>
-      );
-    });
-  };
-
-  const generateHeader = () => {
-    return columns.map((column) => {
-      return <th key={'th-' + column.key}>{column.label}</th>;
-    });
-  };
-
-  return (
-    <table>
-      <thead>
-        <tr>{generateHeader()}</tr>
-      </thead>
-      <tbody>{renderTableData()}</tbody>
-    </table>
   );
 };
 

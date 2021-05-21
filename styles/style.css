@@ -1,0 +1,11 @@
+.validation {
+  max-height: 0px;
+  display: block;
+  transition: max-height 0.7s;
+  color: red;
+}
+
+.validation.error {
+  max-height: 20px;
+  margin-bottom: 5px;
+}
