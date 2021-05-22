@@ -6,9 +6,13 @@ const Table = (props) => {
   const renderTableData = () => {
     return data.map((product, i) => {
       return (
-        <tr key={'tr-' + i}>
+        <tr className="table-rows" key={'tr-' + i}>
           {columns.map((column, j) => {
-            return <td key={'td-' + j}>{product[column.key]}</td>;
+            return (
+              <td className="table-cells" key={'td-' + j}>
+                {product[column.key]}
+              </td>
+            );
           })}
         </tr>
       );
@@ -17,15 +21,17 @@ const Table = (props) => {
 
   const generateHeader = () => {
     return columns.map((column) => {
-      return <th key={'th-' + column.key}>{column.label}</th>;
+      return (
+        <th className="header-cells" key={'th-' + column.key}>
+          {column.label}
+        </th>
+      );
     });
   };
 
   return (
-    <table>
-      <thead>
-        <tr>{generateHeader()}</tr>
-      </thead>
+    <table className="table">
+      <thead className="header">{generateHeader()}</thead>
       <tbody>{renderTableData()}</tbody>
     </table>
   );

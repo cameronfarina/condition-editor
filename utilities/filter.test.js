@@ -17,14 +17,12 @@ test('Check 1 equal product name', () => {
     { 0: 'Hammer', 1: 'brown', 2: 19, 3: 'tools', id: 5 },
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
-  const propertyValueInput = 'Headphones';
+  const propertyFilter = 'Headphones';
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
   ];
 
-  expect(handleEquals(data, selectedProperty, propertyValueInput)).toEqual(
-    output
-  );
+  expect(handleEquals(data, selectedProperty, propertyFilter)).toEqual(output);
 });
 
 test('Check no equal product names', () => {
@@ -37,12 +35,10 @@ test('Check no equal product names', () => {
     { 0: 'Hammer', 1: 'brown', 2: 19, 3: 'tools', id: 5 },
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
-  const propertyValueInput = 'Headphone';
+  const propertyFilter = 'Headphone';
   const output = [];
 
-  expect(handleEquals(data, selectedProperty, propertyValueInput)).toEqual(
-    output
-  );
+  expect(handleEquals(data, selectedProperty, propertyFilter)).toEqual(output);
 });
 
 test('Check multiple exact products with one category', () => {
@@ -61,16 +57,14 @@ test('Check multiple exact products with one category', () => {
     values: ['tools', 'electronics', 'kitchenware'],
     length: 3,
   };
-  const propertyValueSelect = 'Electronics';
+  const propertyFilter = 'Electronics';
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
     { 0: 'Keyboard', 1: 'grey', 2: 5, 3: 'electronics', 4: 'false', id: 2 },
   ];
 
-  expect(handleEquals(data, selectedProperty, propertyValueSelect)).toEqual(
-    output
-  );
+  expect(handleEquals(data, selectedProperty, propertyFilter)).toEqual(output);
 });
 
 test('Check multiple exact products with multiple categories', () => {
@@ -88,11 +82,10 @@ test('Check multiple exact products with multiple categories', () => {
     type: 'enumerated',
     values: ['tools', 'electronics', 'kitchenware'],
   };
-  const propertyValueSelect = [
+  const propertyFilter = [
     { id: 'electronics', label: 'electronics' },
     { id: 'kitchenware', label: 'kitchenware' },
   ];
-  const propertyValueInput = '';
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
@@ -100,17 +93,10 @@ test('Check multiple exact products with multiple categories', () => {
     { 0: 'Cup', 1: 'white', 2: 3, 3: 'kitchenware', id: 3 },
   ];
 
-  expect(
-    handleEquals(
-      data,
-      selectedProperty,
-      propertyValueInput,
-      propertyValueSelect
-    )
-  ).toEqual(output);
+  expect(handleEquals(data, selectedProperty, propertyFilter)).toEqual(output);
 });
 
-test('handle valid greater than value', () => {
+test('handle a valid number for greater than function', () => {
   const data = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
@@ -125,7 +111,7 @@ test('handle valid greater than value', () => {
     type: 'number',
   };
   const value = 'Is greater than';
-  const propertyValueInput = 2;
+  const propertyFilter = 2;
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
@@ -135,12 +121,7 @@ test('handle valid greater than value', () => {
   ];
 
   expect(
-    handleIsGreaterThanOrLessThan(
-      data,
-      value,
-      selectedProperty,
-      propertyValueInput
-    )
+    handleIsGreaterThanOrLessThan(data, value, selectedProperty, propertyFilter)
   ).toEqual(output);
 });
 
@@ -159,16 +140,18 @@ test('handle invalid value', () => {
     type: 'number',
   };
   const value = 'Is greater than';
-  const propertyValueInput = 'test';
-
-  expect(() => {
-    handleIsGreaterThanOrLessThan(
-      data,
-      value,
-      selectedProperty,
-      propertyValueInput
-    );
-  }).toThrow('Please input a valid number and try again');
+  const propertyFilter = 'aegag';
+  const output = [
+    { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
+    { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
+    { 0: 'Keyboard', 1: 'grey', 2: 5, 3: 'electronics', 4: 'false', id: 2 },
+    { 0: 'Cup', 1: 'white', 2: 3, 3: 'kitchenware', id: 3 },
+    { 0: 'Key', 1: 'silver', 2: 1, 3: 'tools', id: 4 },
+    { 0: 'Hammer', 1: 'brown', 2: 19, 3: 'tools', id: 5 },
+  ];
+  expect(
+    handleIsGreaterThanOrLessThan(data, value, selectedProperty, propertyFilter)
+  ).toStrictEqual(output);
 });
 
 test('handle valid less than value', () => {
@@ -186,7 +169,7 @@ test('handle valid less than value', () => {
     type: 'number',
   };
   const value = 'Is less than';
-  const propertyValueInput = 4;
+  const propertyFilter = 4;
   const output = [
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
     { 0: 'Cup', 1: 'white', 2: 3, 3: 'kitchenware', id: 3 },
@@ -194,12 +177,7 @@ test('handle valid less than value', () => {
   ];
 
   expect(
-    handleIsGreaterThanOrLessThan(
-      data,
-      value,
-      selectedProperty,
-      propertyValueInput
-    )
+    handleIsGreaterThanOrLessThan(data, value, selectedProperty, propertyFilter)
   ).toEqual(output);
 });
 
@@ -218,7 +196,7 @@ test('handle is any of with 2 categories', () => {
     type: 'enumerated',
     values: ['tools', 'electronics', 'kitchenware'],
   };
-  const propertyValueSelect = [
+  const propertyFilter = [
     { id: 'electronics', label: 'electronics' },
     { id: 'kitchenware', label: 'kitchenware' },
   ];
@@ -229,9 +207,7 @@ test('handle is any of with 2 categories', () => {
     { 0: 'Cup', 1: 'white', 2: 3, 3: 'kitchenware', id: 3 },
   ];
 
-  expect(handleIsAnyOf(data, propertyValueSelect, selectedProperty)).toEqual(
-    output
-  );
+  expect(handleIsAnyOf(data, selectedProperty, propertyFilter)).toEqual(output);
 });
 
 test('handle is any of with 3 product names', () => {
@@ -245,7 +221,7 @@ test('handle is any of with 3 product names', () => {
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
 
-  const propertyValueSelect = [
+  const propertyFilter = [
     { id: 'Cell Phone', name: 'Cell Phone' },
     { id: 'Keyboard', name: 'Keyboard' },
     { id: 'Key', name: 'Key' },
@@ -256,9 +232,7 @@ test('handle is any of with 3 product names', () => {
     { 0: 'Key', 1: 'silver', 2: 1, 3: 'tools', id: 4 },
   ];
 
-  expect(handleIsAnyOf(data, propertyValueSelect, selectedProperty)).toEqual(
-    output
-  );
+  expect(handleIsAnyOf(data, selectedProperty, propertyFilter)).toEqual(output);
 });
 
 test('handle contains partial value', () => {
@@ -272,15 +246,15 @@ test('handle contains partial value', () => {
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
 
-  const propertyValueInput = 'head';
+  const propertyFilter = 'head';
 
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
   ];
 
-  expect(
-    handleContainsValue(data, selectedProperty, propertyValueInput)
-  ).toEqual(output);
+  expect(handleContainsValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });
 
 test('handle contains exact value', () => {
@@ -294,18 +268,18 @@ test('handle contains exact value', () => {
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
 
-  const propertyValueInput = 'Headphones';
+  const propertyFilter = 'Headphones';
 
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
   ];
 
-  expect(
-    handleContainsValue(data, selectedProperty, propertyValueInput)
-  ).toEqual(output);
+  expect(handleContainsValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });
 
-test.skip('handle contains partial value no case sensitivity', () => {
+test('handle contains partial value no case sensitivity', () => {
   const data = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
@@ -316,15 +290,15 @@ test.skip('handle contains partial value no case sensitivity', () => {
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
 
-  const propertyValueInput = 'HEA';
+  const propertyFilter = 'HEA';
 
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
   ];
 
-  expect(
-    handleContainsValue(data, selectedProperty, propertyValueInput)
-  ).toEqual(output);
+  expect(handleContainsValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });
 
 test('handle has any value with exact text input', () => {
@@ -338,25 +312,19 @@ test('handle has any value with exact text input', () => {
   ];
   const selectedProperty = { id: 1, name: 'color', type: 'string' };
 
-  const propertyValueInput = 'black';
-  const propertyValueSelect = null;
+  const propertyFilter = 'black';
 
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
   ];
 
-  expect(
-    handleHasAnyValue(
-      data,
-      propertyValueSelect,
-      propertyValueInput,
-      selectedProperty
-    )
-  ).toEqual(output);
+  expect(handleHasAnyValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });
 
-test.skip('handle has any value with partial text input', () => {
+test('handle has any value with partial text input', () => {
   const data = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
@@ -367,22 +335,16 @@ test.skip('handle has any value with partial text input', () => {
   ];
   const selectedProperty = { id: 1, name: 'color', type: 'string' };
 
-  const propertyValueInput = 'bl';
-  const propertyValueSelect = [];
+  const propertyFilter = 'bl';
 
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
   ];
 
-  expect(
-    handleHasAnyValue(
-      data,
-      propertyValueSelect,
-      propertyValueInput,
-      selectedProperty
-    )
-  ).toEqual(output);
+  expect(handleHasAnyValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });
 
 test('handle has any value with multiple selected options', () => {
@@ -401,8 +363,7 @@ test('handle has any value with multiple selected options', () => {
     values: ['tools', 'electronics', 'kitchenware'],
   };
 
-  const propertyValueInput = '';
-  const propertyValueSelect = [
+  const propertyFilter = [
     { id: 'electronics', label: 'electronics' },
     { id: 'kitchenware', label: 'kitchenware' },
   ];
@@ -414,17 +375,12 @@ test('handle has any value with multiple selected options', () => {
     { 0: 'Cup', 1: 'white', 2: 3, 3: 'kitchenware', id: 3 },
   ];
 
-  expect(
-    handleHasAnyValue(
-      data,
-      propertyValueSelect,
-      propertyValueInput,
-      selectedProperty
-    )
-  ).toEqual(output);
+  expect(handleHasAnyValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });
 
-test.skip('handle has no value with partial matching text input', () => {
+test('handle has no value with partial matching text input', () => {
   const data = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
@@ -435,22 +391,16 @@ test.skip('handle has no value with partial matching text input', () => {
   ];
   const selectedProperty = { id: 0, name: 'Product Name', type: 'string' };
 
-  const propertyValueInput = 'key';
-  const propertyValueSelect = null;
+  const propertyFilter = 'key';
 
   const output = [
     { 0: 'Headphones', 1: 'black', 2: 5, 3: 'electronics', 4: 'false', id: 0 },
     { 0: 'Cell Phone', 1: 'black', 2: 3, 3: 'electronics', 4: 'true', id: 1 },
     { 0: 'Cup', 1: 'white', 2: 3, 3: 'kitchenware', id: 3 },
-    { 0: 'Hammer', 1: 'brown', 2: 19, 3: 'tools', id: 4 },
+    { 0: 'Hammer', 1: 'brown', 2: 19, 3: 'tools', id: 5 },
   ];
 
-  expect(
-    handleHasNoValue(
-      data,
-      propertyValueSelect,
-      propertyValueInput,
-      selectedProperty
-    )
-  ).toEqual(output);
+  expect(handleHasNoValue(data, selectedProperty, propertyFilter)).toEqual(
+    output
+  );
 });

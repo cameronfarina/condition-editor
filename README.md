@@ -1,34 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Please run `npm i` and `npm run dev` to build locally. To run the tests I've created, run `npm run test`.
 
-## Getting Started
+---
 
-First, run the development server:
+### My Thoughts
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+First, I began with restructuring the data from the API to make it easier to work with
+(see line 21 of index.jsx). Once the data looked the way I wanted, I created the table
+utilizing simple mapping functions.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Once the table was complete, I began thinking about how to design the rest of the app.
+To ensure a smooth UX, I built conditional dropdowns that would render upon the previous
+dropdown being used.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Lastly, the meat of the challenge, the filtering functionality.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+I opted to create separate filtering functions to handle the different operators.
+While there are similarities throughout the functions, I felt it was not worth
+sacrificing either readability or testability to create one large filtering function.
 
-## Learn More
+All tests can be found in the /utility directory.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### The App, UI and Assumptions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+To begin, we select a property which then prompts the operator dropdown to appear
+and lastly we see either a text box or a multi select option.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+We store and pass the search criteria to the respective filter functionality and
+return the results. Because we were able to assume no other operators would be used,
+I created an 'options' variable and utilized this to determine which filter function
+would be used.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+My goal was to be as efficient as possible with my time throughout this challenge
+while also producing clean, readable code.
+
+Time taken broken down to the best of my ability:
+
+- environment setup (5 minutes)
+- restructuring data and creating of the table (25 minutes)
+- building out filter functions with tests (1 hour)
+- testing for edge cases (30 minutes)
+- styling and cleanup (10 minutes)
+- README (10 minutes)
+
+All in all, this challenge took a bit over 2 hours.
+
+I appreciate you giving me the opportunity to showcase my skills and hope to hear your
+feedback soon!

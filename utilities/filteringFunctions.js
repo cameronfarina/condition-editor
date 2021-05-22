@@ -22,13 +22,7 @@ export function handleIsGreaterThanOrLessThan(
   productFilter
 ) {
   if (isNaN(productFilter)) {
-    document.querySelector('.validation').innerText =
-      'Please input a valid number';
-    document.querySelector('.validation').classList.add('error');
     return data;
-  } else {
-    document.querySelector('.validation').innerText = '';
-    document.querySelector('.validation').classList.remove('error');
   }
 
   const filtered = data.filter((product) => {
@@ -63,7 +57,6 @@ export function handleContainsValue(data, selectedProperty, productFilter) {
 }
 
 export function handleHasAnyValue(data, selectedProperty, productFilter) {
-  console.log('product filter', productFilter);
   const filtered = data.filter((product) => {
     if (Array.isArray(productFilter)) {
       return productFilter.some((propertyValue) => {
@@ -81,7 +74,7 @@ export function handleHasAnyValue(data, selectedProperty, productFilter) {
 
 export function handleHasNoValue(data, selectedProperty, productFilter) {
   const filtered = data.filter((product) => {
-    if (productFilter) {
+    if (Array.isArray(productFilter)) {
       return productFilter.some((propertyValue) => {
         return product[selectedProperty.id] !== propertyValue.id;
       });

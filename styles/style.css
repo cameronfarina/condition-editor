@@ -1,11 +1,104 @@
-.validation {
-  max-height: 0px;
-  display: block;
-  transition: max-height 0.7s;
-  color: red;
+.table-container {
+  margin: 0 auto;
+  padding: 0 25px;
 }
 
-.validation.error {
-  max-height: 20px;
-  margin-bottom: 5px;
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  text-align: left;
+}
+
+.header-cells {
+  padding: 25px 0;
+}
+
+.table-rows .table-cells {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+.css-yk16xz-control {
+  width: 100%;
+  margin: 5px auto;
+}
+
+.css-yk16xz-control:hover {
+  cursor: pointer;
+}
+
+.user-input,
+.filter {
+  align-items: center;
+  background-color: hsl(0, 0%, 100%);
+  border-color: hsl(0, 0%, 80%);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  min-height: 38px;
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  margin: 5px 0;
+  padding: 0 8px;
+}
+
+.filter:hover {
+  background-color: #07c3fe;
+  color: white;
+  border-color: #07c3fe;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 50px 0 25px 0;
+}
+
+@media only screen and (min-width: 768px) {
+  .table-container {
+    width: 738px;
+  }
+
+  .css-1pahdxg-control,
+  .css-yk16xz-control {
+    width: 200px;
+  }
+
+  .filter {
+    width: 50px;
+  }
+
+  .filter-form {
+    flex-direction: row;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .table-container {
+    width: 962px;
+  }
+
+  .css-yk16xz-control,
+  .css-1pahdxg-control {
+    width: 250px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .table-container {
+    width: 1170px;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import { datastore } from '../components/table/datastore';
 import {
@@ -35,8 +35,6 @@ const Index = () => {
 
   const [propertyValueInput, setPropertyValueInput] = useState('');
   const [propertyValueSelect, setPropertyValueSelect] = useState(null);
-
-  const [productFilter, setProductFilter] = useState(null);
 
   const [filteredTableData, setFilteredTableData] = useState(initialTableData);
 
@@ -134,9 +132,9 @@ const Index = () => {
   };
 
   return (
-    <div>
+    <div className="table-container">
       <form className="filter-form" onSubmit={() => {}}>
-        <div style={{ width: '250px' }}>
+        <div>
           <Select
             instanceId="property"
             placeholder="Select a property"
@@ -155,7 +153,7 @@ const Index = () => {
         </div>
 
         {options[selectedProperty?.type] && (
-          <div style={{ width: '250px' }}>
+          <div>
             <Select
               instanceId="property"
               className="select-operator"
@@ -182,11 +180,7 @@ const Index = () => {
               label: values,
             }));
             return (
-              <div
-                className="product-filter-input-group"
-                style={{ width: '250px' }}
-              >
-                <span className="validation" />
+              <div className="product-filter-input-group">
                 <Select
                   isMulti
                   options={ourOptions}
@@ -210,7 +204,7 @@ const Index = () => {
             });
 
             return (
-              <div style={{ width: '250px' }}>
+              <div>
                 <Select
                   isClearable
                   isMulti
@@ -224,17 +218,15 @@ const Index = () => {
                 />
               </div>
             );
-          } else {
+          } else if (selectedOperator?.id) {
             return (
-              <div
-                className="product-filter-input-group"
-                style={{ width: '250px' }}
-              >
-                <span className="validation" />
+              <div className="product-filter-input-group">
                 <input
                   type="text"
+                  className="user-input"
                   onChange={(e) => setPropertyValueInput(e.target.value)}
                   value={propertyValueInput}
+                  placeholder="Input a value"
                 />
               </div>
             );
